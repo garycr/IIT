@@ -6,3 +6,5 @@ churnData = read.csv(file);
 summary(churnData);
 head(churnData);
 tail(churnData);
+churnData$Area_Code;
+
