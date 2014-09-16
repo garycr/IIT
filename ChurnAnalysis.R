@@ -5,3 +5,4 @@ file <- "./ChurnData.csv";
 churnData = read.csv(file);
 summary(churnData);
 head(churnData);
+tail(churnData);
