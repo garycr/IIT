@@ -1,0 +1,20 @@
+c:\users\garycr\documents\visual studio 2013\Projects\CallRequestResponseService\CallRequestResponseService\bin\Debug\CallRequestResponseService.exe.config
+c:\users\garycr\documents\visual studio 2013\Projects\CallRequestResponseService\CallRequestResponseService\bin\Debug\CallRequestResponseService.exe
+c:\users\garycr\documents\visual studio 2013\Projects\CallRequestResponseService\CallRequestResponseService\bin\Debug\CallRequestResponseService.pdb
+c:\users\garycr\documents\visual studio 2013\Projects\CallRequestResponseService\CallRequestResponseService\bin\Debug\Newtonsoft.Json.dll
+c:\users\garycr\documents\visual studio 2013\Projects\CallRequestResponseService\CallRequestResponseService\bin\Debug\System.Net.Http.Formatting.dll
+c:\users\garycr\documents\visual studio 2013\Projects\CallRequestResponseService\CallRequestResponseService\bin\Debug\Newtonsoft.Json.xml
+c:\users\garycr\documents\visual studio 2013\Projects\CallRequestResponseService\CallRequestResponseService\bin\Debug\System.Net.Http.Formatting.xml
+c:\users\garycr\documents\visual studio 2013\Projects\CallRequestResponseService\CallRequestResponseService\obj\Debug\CallRequestResponseService.csprojResolveAssemblyReference.cache
+c:\users\garycr\documents\visual studio 2013\Projects\CallRequestResponseService\CallRequestResponseService\obj\Debug\CallRequestResponseService.exe
+c:\users\garycr\documents\visual studio 2013\Projects\CallRequestResponseService\CallRequestResponseService\obj\Debug\CallRequestResponseService.pdb
+C:\Projects\Computational Finance\ComputationalFinance\CallRequestResponseService\CallRequestResponseService\bin\Debug\CallRequestResponseService.exe.config
+C:\Projects\Computational Finance\ComputationalFinance\CallRequestResponseService\CallRequestResponseService\obj\Debug\CallRequestResponseService.exe
+C:\Projects\Computational Finance\ComputationalFinance\CallRequestResponseService\CallRequestResponseService\obj\Debug\CallRequestResponseService.pdb
+C:\Projects\Computational Finance\ComputationalFinance\CallRequestResponseService\CallRequestResponseService\bin\Debug\CallRequestResponseService.exe
+C:\Projects\Computational Finance\ComputationalFinance\CallRequestResponseService\CallRequestResponseService\bin\Debug\CallRequestResponseService.pdb
+C:\Projects\Computational Finance\ComputationalFinance\CallRequestResponseService\CallRequestResponseService\bin\Debug\Newtonsoft.Json.dll
+C:\Projects\Computational Finance\ComputationalFinance\CallRequestResponseService\CallRequestResponseService\bin\Debug\System.Net.Http.Formatting.dll
+C:\Projects\Computational Finance\ComputationalFinance\CallRequestResponseService\CallRequestResponseService\bin\Debug\Newtonsoft.Json.xml
+C:\Projects\Computational Finance\ComputationalFinance\CallRequestResponseService\CallRequestResponseService\bin\Debug\System.Net.Http.Formatting.xml
+C:\Projects\Computational Finance\ComputationalFinance\CallRequestResponseService\CallRequestResponseService\obj\Debug\CallRequestResponseService.csprojResolveAssemblyReference.cache
