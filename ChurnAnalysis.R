@@ -3,9 +3,10 @@
 # Load the file for analysis
 file <- "./ChurnData.csv";
 churnData = read.csv(file);
+names(churnData);
 summary(churnData);
 head(churnData);
 tail(churnData);
 
-plot(churnData$Area_Code);
+
 
