@@ -27,14 +27,18 @@ import numpy as np
 #   time = time + 1
 
 # create the adjacency matrix for our graph
-G = [[1,3,6],[0,6],[5],[1,4],[1],[4,3],[3]]
+#G = [[1,3,6],[0,6],[5],[1,4],[1],[4,3],[3]]
 #G = [[3],[2,7],[5,4],[5],[],[],[0,3,2],[4]]
+G = [[4,5,11],[2,4,8],[5,6,9],[2,6,13],[7],[8,12],[5],[],[7],[10,11],[13],[],[9],[]]
+#G = [['q','r','x'],['o','q','u'],['r','s','v'],['o','s','z'],['t'],['u','y'],['r'],[],['t'],['w','x'],['z'],[],['v'],[]]
+
 
 color = []
 parent = []
 discover = []
 finish = []
 tpSort = []
+labels = ['m', 'n','o','p','q','r','s','t','u','v','w','x','y','z']
 time = 0
 
 def DFS_VISIT(u):
@@ -50,7 +54,7 @@ def DFS_VISIT(u):
     
     color[u] = 'black'
     finish[u] = time
-    tpSort.append(u)
+    tpSort.append(labels[u])
     time = time + 1
 
 
@@ -66,6 +70,7 @@ def DFS(G):
 
 
 DFS(G)
+
 print(discover)
 print(finish)
 tpSort.reverse()
