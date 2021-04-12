@@ -26,40 +26,47 @@ import numpy as np
 #   finish[u] = time
 #   time = time + 1
 
+# create the adjacency matrix for our graph
+G = [[1,3,6],[0,6],[5],[1,4],[1],[4,3],[3]]
+#G = [[3],[2,7],[5,4],[5],[],[],[0,3,2],[4]]
+
 color = []
 parent = []
 discover = []
 finish = []
+tpSort = []
 time = 0
 
 def DFS_VISIT(u):
     global time
-    color[G.index(u)] = 'grey'
-    discover.append(time)
+    color[u] = 'grey'
+    discover[u] = time
     time = time + 1
 
-    for v in u:
+    for v in G[u]:
         if (color[v] == 'white'):
-            parent[v] = G.index(u)
-            DFS_VISIT(G[v])
+            parent[v] = u
+            DFS_VISIT(v)
     
-    color[G.index(u)] = 'black'
-    finish.append(time)
+    color[u] = 'black'
+    finish[u] = time
+    tpSort.append(u)
     time = time + 1
 
 
 def DFS(G):
-    for v in G:
+    for v in range(0, len(G)):
         color.append('white')
         parent.append(None)
-    for u in G:
-        if (color[G.index(u)] == 'white'):
+        discover.append(None)
+        finish.append(None)
+    for u in range(0, len(G)):
+        if (color[u] == 'white'):
             DFS_VISIT(u)
 
 
-
-
-# create the adjacency matrix for our graph
-G = [[1,3,6],[0,6],[5],[1,4],[1],[4,3],[3]]
-
 DFS(G)
+print(discover)
+print(finish)
+tpSort.reverse()
+print(tpSort)
