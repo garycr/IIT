@@ -35,9 +35,18 @@ time = 0
 def DFS_VISIT(u):
     global time
     color[G.index(u)] = 'grey'
-    discover[G.index(u)] = time
+    discover.append(time)
     time = time + 1
-# you are here    
+
+    for v in u:
+        if (color[v] == 'white'):
+            parent[v] = G.index(u)
+            DFS_VISIT(G[v])
+    
+    color[G.index(u)] = 'black'
+    finish.append(time)
+    time = time + 1
+
 
 def DFS(G):
     for v in G:
