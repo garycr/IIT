@@ -1,4 +1,3 @@
-import numpy as np
 # use depth-first search to perform a topological sort of a directed acyclic graph (DAG)
 
 #TOPOLOGICAL-SORT(G)
