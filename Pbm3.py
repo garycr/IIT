@@ -67,15 +67,15 @@ def BFS(G, s):
                 myQueue.append(v)
         u.color = 'BLACK'
 
-    return u
+    return u.distance
 
 def TP_SORT(G,s):
 
-    w = BFS(G, s)
+    d = BFS(G, s)
 
     result = []
     degree = 0
-    while (degree <= w.distance): 
+    while (degree <= d): 
         for v in G.V:
             if (v.distance == degree):
                 result.append(v.idx)
@@ -90,6 +90,7 @@ def TP_SORT(G,s):
 
 V = [Vertex(0),Vertex(1),Vertex(2),Vertex(3),Vertex(4),Vertex(5),Vertex(6) ]
 E = [[1,3,6],[0,6],[5],[1,4],[1],[4,3],[3]]
+#E = [[1],[2],[3],[4],[5],[6],[]]
 G = Graph(V,E)
 
 print(TP_SORT(G, V[0]))
