@@ -15,7 +15,7 @@ class Vertex:
 	def __init__(self, index):
             self.index = index 
             self.distance = int(0xFFFFFF)
-            self.parent = None
+            self.parent = []
 
 # A data structure for a vertex
 class Edge:
@@ -107,9 +107,9 @@ def Dijkstra(G,S):
         for j in range(0,len(G.Adj[u.index])): # only v that are still in Q
             v = G.V[G.Adj[u.index][j].vertex]
             alt = u.distance + G.Adj[u.index][j].weight
-            if (alt < v.distance):
+            if (alt <= v.distance):
                 v.distance = alt
-                v.parent = u
+                v.parent.append(u)
                 DecreaseKey(Q, v.index, v)
 
         u = ExtractMin(Q)                 # Remove and return best vertex
@@ -122,7 +122,7 @@ E = [
     [Edge(1,1),Edge(2,7)],
     [Edge(3,9),Edge(5,15)],
     [Edge(4,4)],
-    [Edge(5,5),Edge(4,10)],
+    [Edge(5,5),Edge(4,1)],
     [Edge(5,3)],
     [],
    ]
