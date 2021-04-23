@@ -17,6 +17,15 @@ class Vertex:
             self.distance = int(0xFFFFFF)
             self.parent = None
 
+# A data structure for a vertex
+class Edge:
+	
+	# Constructor to create a new vertex
+	def __init__(self, vertex, weight):
+            self.vertex = vertex 
+            self.weight = weight
+
+
 minHeapSize = 0
 
 def Parent(i):
@@ -66,7 +75,7 @@ def ExtractMin(A):
     MinHeapify(A,0)
     return min
 
-def minHeapIncreasedistance(A, i, x):
+def minHeapIncreaseDistance(A, i, x):
     if x.distance > A[i].distance:
         return -1
     A[i] = x
@@ -77,27 +86,27 @@ def minHeapIncreasedistance(A, i, x):
 def Insert(S, x):
     global minHeapSize
     minHeapSize += 1
-    S[minHeapSize-1] = x
-    minHeapIncreasedistance(S, minHeapSize-1, x)
+    S.append(x)
+    minHeapIncreaseDistance(S, minHeapSize-1, x)
 
 
 # G=Graph, W=Weight, S=Source Vertex
-def Dijkstra(G, W, S):
+def Dijkstra(G,S):
     # Graph, vertices, edges, and weights initialized during construction
-3
-4      create vertex priority queue Q
-5
-6      for each vertex v in Graph:          
-7          if v ≠ source
-8              dist[v] ← INFINITY                 // Unknown distance from source to v
-9              prev[v] ← UNDEFINED                // Predecessor of v
-10
-11         Q.add_with_priority(v, dist[v])
-12
-13
-14     while Q is not empty:                      // The main loop
-15         u ← Q.extract_min()                    // Remove and return best vertex
-16         for each neighbor v of u:              // only v that are still in Q
+    S.distance = 0
+
+    # create vertex priority queue Q
+    Q = []
+
+    # initialize min-priority queue to contain all the vertices in G.V
+    for i in range(0, len(G.V)-1):
+        Insert(Q, G.V[i])
+
+    while Q is not None:                  # The main loop
+        u = ExtractMin(Q)                 # Remove and return best vertex
+
+'''
+16         for each neighbor v of u:           # only v that are still in Q
 17             alt ← dist[u] + length(u, v)
 18             if alt < dist[v]
 19                 dist[v] ← alt
@@ -105,7 +114,18 @@ def Dijkstra(G, W, S):
 21                 Q.decrease_priority(v, alt)
 22
 23     return dist, prev
+'''
 
 V = [Vertex(0),Vertex(1),Vertex(2),Vertex(3),Vertex(4),Vertex(5),Vertex(6)]
-E = [[1,3,6],[0,6],[5],[1,4],[1],[4,3],[3]]
+E = [
+    [Edge(1,1),Edge(2,7)],
+    [Edge(5,15),Edge(3,9)],
+    [Edge(2,4)],
+    [Edge(5,5),Edge(4,10)],
+    [Edge(5,3)],
+    [],
+   ]
+
 G = Graph(V,E)
+
+Dijkstra(G, V[0])
