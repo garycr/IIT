@@ -75,10 +75,10 @@ def ExtractMin(A):
     MinHeapify(A,0)
     return min
 
-def minHeapIncreaseDistance(A, i, x):
+def DecreaseKey(A, i, x):
     if x.distance > A[i].distance:
         return -1
-    A[i] = x
+    A[i].distance = x.distance
     while i > 0 and A[Parent(i-1)].distance > A[i].distance:
         swap(A, i, Parent(i-1))
         i = Parent(i-1)
@@ -87,8 +87,7 @@ def Insert(S, x):
     global minHeapSize
     minHeapSize += 1
     S.append(x)
-    minHeapIncreaseDistance(S, minHeapSize-1, x)
-
+    DecreaseKey(S, minHeapSize-1, x)
 
 # G=Graph, W=Weight, S=Source Vertex
 def Dijkstra(G,S):
@@ -99,28 +98,30 @@ def Dijkstra(G,S):
     Q = []
 
     # initialize min-priority queue to contain all the vertices in G.V
-    for i in range(0, len(G.V)-1):
+    for i in range(0, len(G.V)):
         Insert(Q, G.V[i])
 
-    while Q is not None:                  # The main loop
+    u = ExtractMin(Q)                 # Remove and return best vertex
+    while u is not -1:                  # The main loop
+        
+        for j in range(0,len(G.Adj[u.index])): # only v that are still in Q
+            v = G.V[G.Adj[u.index][j].vertex]
+            alt = u.distance + G.Adj[u.index][j].weight
+            if (alt < v.distance):
+                v.distance = alt
+                v.parent = u
+                DecreaseKey(Q, v.index, v)
+
         u = ExtractMin(Q)                 # Remove and return best vertex
 
-'''
-16         for each neighbor v of u:           # only v that are still in Q
-17             alt ← dist[u] + length(u, v)
-18             if alt < dist[v]
-19                 dist[v] ← alt
-20                 prev[v] ← u
-21                 Q.decrease_priority(v, alt)
-22
-23     return dist, prev
-'''
+    return 
 
-V = [Vertex(0),Vertex(1),Vertex(2),Vertex(3),Vertex(4),Vertex(5),Vertex(6)]
+
+V = [Vertex(0),Vertex(1),Vertex(2),Vertex(3),Vertex(4),Vertex(5)]
 E = [
     [Edge(1,1),Edge(2,7)],
-    [Edge(5,15),Edge(3,9)],
-    [Edge(2,4)],
+    [Edge(3,9),Edge(5,15)],
+    [Edge(4,4)],
     [Edge(5,5),Edge(4,10)],
     [Edge(5,3)],
     [],
