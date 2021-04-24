@@ -43,36 +43,32 @@ def sortKey(obj):
 
 def MaximalClique(E):
 
-	G = []
 	C = 0
+	G = []
 
 	# Add each vertex to a graph and determine its degree
 	for n in range(0, len(E)):
 		bv = 0
 		for e in range(0,len(E[n])):
 			bv += 1 << E[n][e]
-		G.append(Vertex(n, len(E[n]), bv))
-
-	# Sort the vertices from highest degree to lowest degree
-	G.sort(key=sortKey, reverse=True)
+		G.append(bv)
 
 	# Put the first vertex in the clique
-	C = 1 << G[0].index
-
+	C = 1 << 0
 
 	for v in range(1,len(G)):
 		# Test each of the other vertices to see whether it is adjacent to all the clique vertices added thus far
 		test = True
 
 		# Use a bit vector to mark which vertices are currently in the clique
-		if ((C & G[v].adj) == C):
-			C += 1 << G[v].index
+		if ((C & G[v]) == C):
+			C += 1 << v
 
 	return C
 
 
-#E = [[1,4],[0,2,3,4],[1,3],[1,4,2],[3,0,1]]
-E = [[1,4,3],[0,2,3,4],[1,3],[0,1,4,2],[3,0,1]]
+E = [[1,4],[0,2,3,4],[1,3],[1,4,2],[3,0,1]]
+#E = [[1,4,3],[0,2,3,4],[1,3],[0,1,4,2],[3,0,1]]
 # G = [[4,5,11],[2,4,8],[5,6,9],[2,6,13],[7],[8,12],[5],[],[7],[10,11],[13],[],[9],[]]
 
 
