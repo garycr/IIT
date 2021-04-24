@@ -1,5 +1,5 @@
 import numpy as np
-from bitarray import bitarray
+#from bitarray import bitarray
 
 # A data structure for a graph
 class Graph:
@@ -13,9 +13,10 @@ class Graph:
 class Vertex:
 	
 	# Constructor to create a new node
-	def __init__(self, index, degree):
-            self.index = index 
-            self.degree = degree
+	def __init__(self, index, degree, adj):
+		self.index = index 
+		self.degree = degree
+		self.adj = adj
 
 '''
 16.1 Clique
@@ -43,39 +44,39 @@ def sortKey(obj):
 def MaximalClique(E):
 
 	G = []
-	Clique = [] 		# Clique
-	#inClique = BitVector(size = len(E))
+	C = 0
 
 	# Add each vertex to a graph and determine its degree
 	for n in range(0, len(E)):
-		G.append(Vertex(n, len(E[n])))
+		bv = 0
+		for e in range(0,len(E[n])):
+			bv += 1 << E[n][e]
+		G.append(Vertex(n, len(E[n]), bv))
 
 	# Sort the vertices from highest degree to lowest degree
 	G.sort(key=sortKey, reverse=True)
 
 	# Put the first vertex in the clique
-	Clique.append(G[0])
+	C = 1 << G[0].index
 
-	for n in range(1,len(G)):
+
+	for v in range(1,len(G)):
 		# Test each of the other vertices to see whether it is adjacent to all the clique vertices added thus far
 		test = True
-		for m in range(0, len(Clique)):
-			if (Clique[m].index not in E[G[n].index]):
-				test = False
-				break
-		
-		# If so, add it; if not, continue down the list.
-		if (test == True):
-			Clique.append(G[n])
 
 		# Use a bit vector to mark which vertices are currently in the clique
+		if ((C & G[v].adj) == C):
+			C += 1 << G[v].index
 
-	return Clique
+	return C
 
 
 #E = [[1,4],[0,2,3,4],[1,3],[1,4,2],[3,0,1]]
 E = [[1,4,3],[0,2,3,4],[1,3],[0,1,4,2],[3,0,1]]
 # G = [[4,5,11],[2,4,8],[5,6,9],[2,6,13],[7],[8,12],[5],[],[7],[10,11],[13],[],[9],[]]
+
+
+
 
 result = MaximalClique(E)
 print(result)
