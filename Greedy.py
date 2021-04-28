@@ -22,7 +22,8 @@ while True:
     plt.axhline(y=hline, color='r', linestyle='-')
     plt.axvline(x=vline, color='b', linestyle='-')
 
-
+    break
+'''
     above = sum(points[:,0] > hline)
     below = sum(points[:,0] < hline)
 
@@ -36,8 +37,8 @@ while True:
     hline = x if x % 2 else x + 1
     hline =  (x / 2) + mn
     plt.axhline(y=hline, color='r', linestyle='-')
+'''
 
-    break
 
 # plot the points
 plt.scatter(points[:,0], points[:,1])
