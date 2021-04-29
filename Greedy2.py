@@ -95,11 +95,7 @@ def SelectLine():
         S.append(L)
         BoundedRects(L)
 
-    for i in range(0, len(S)):
-        if (S[i][0] == 'h'):
-            plt.axhline(y=S[i][1], color='r', linestyle='-')
-        else:
-            plt.axvline(x=S[i][1], color='b', linestyle='-')
+
 
 
 def Partition(Rect):
@@ -168,7 +164,11 @@ xMean, xPts, yMean, yPts = Partition(R[0])
 # TODO: determine line type
 CreateLine('h', xMean)
 
-
+for i in range(0, len(S)):
+    if (S[i][0] == 'h'):
+        plt.axhline(y=S[i][1], color='r', linestyle='-')
+    else:
+        plt.axvline(x=S[i][1], color='b', linestyle='-')
 # plot the points
 plt.scatter(points[:,0], points[:,1])
 plt.xlabel('x')
