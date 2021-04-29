@@ -62,21 +62,6 @@ def BoundedRects(L):
 
     return
 
-def SelectLine():
-    # see if we should do a horizontal or vertical line next
-    if (pts2 + pts3 > pts1 + pts4):
-        #horizontal
-        ux = mean(points[:,0]) - 0.5
-        L = ['h', ux]
-        S.append(L)
-        BoundedRects(L)
-    else:
-        #vertical
-        uy =  mean(points[:,0]) + 0.5
-        L = ['v', uy]
-        S.append(L)
-        BoundedRects(L)
-
 def Partition(Rect):
     # use the mean of the points
     ux = 0
@@ -86,8 +71,17 @@ def Partition(Rect):
         ux += Rect.points[i].x
         uy += Rect.points[i].y
     
-    meanX = ux/pts
-    meanY = uy/pts
+    meanX = 0
+    meanY = 0
+    if (pts > 0):
+        meanX = ux/pts
+        meanY = uy/pts
+
+    if ((meanX % 1) == 0):
+        meanX += 0.5
+    
+    if ((meanY % 1) == 0):
+        meanY += 0.5
 
     xPoints = 0
     yPoints = 0
