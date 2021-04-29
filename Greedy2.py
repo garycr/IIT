@@ -62,24 +62,6 @@ def BoundedRects(L):
 
     return
 
-
-def CoveredPoints(boundingRectangle, points):
-    pts = 0
-
-    for i in range(0, len(points)):
-        x = points[i][0]
-        y = points[i][1]
-        x1 = boundingRectangle[0]
-        y1 = boundingRectangle[1]
-        x2 = boundingRectangle[2]
-        y2 = boundingRectangle[3]
-
-        if ((x >= x1 and x <= x2) and (y >= y1 and y <= y2)):
-            pts += 1
-
-    return pts
-
-
 def SelectLine():
     # see if we should do a horizontal or vertical line next
     if (pts2 + pts3 > pts1 + pts4):
@@ -94,9 +76,6 @@ def SelectLine():
         L = ['v', uy]
         S.append(L)
         BoundedRects(L)
-
-
-
 
 def Partition(Rect):
     # use the mean of the points
@@ -120,30 +99,46 @@ def Partition(Rect):
 
     return (meanX, xPoints, meanY, yPoints)
 
-def CreateLine(lineType, coord):
+def Done():
     
-    L = [lineType, coord]
-    S.append(L)
-    BoundedRects(L)
+    done = True
+    for i in range(0, len(R)):
+        if (len(R[i].points) > 1):
+            done = False
+            break
 
+    return done
 
-    r = np.array(R)
-    txMax = max(r[:,0])
-    txMin = min(r[:,0])
+def CreateLines():
+    
+    while (Done() != True):
+    
+        maxPts = []
 
-    tyMax = max(r[:,1])
-    tyMin = min(r[:,1])
+        for i in range(0,len(R)):
+            #xMean, xPts, yMean, yPts = Partition(R[i])
+            maxPts.append(Partition(R[i]))
 
-    # Verify rectangles
-    x1 = np.concatenate([r[2,:3], r[0,2:3]])
-    x2 = np.concatenate([r[1,:2], r[2,2:4]])
-    x3 = np.concatenate([r[3,0:1], r[1,1:2], r[3,2:]])
-    x4 = np.concatenate([r[3,0:3], r[1,1:2]])
+        mp = np.array(maxPts)
 
-    pts1 = CoveredPoints(x1, points)
-    pts2 = CoveredPoints(x2, points)
-    pts3 = CoveredPoints(x3, points)
-    pts4 = CoveredPoints(x4, points)
+        xMax = np.argmax(mp[:,1])
+        yMax = np.argmax(mp[:,3])
+
+        # determine line type
+        if (mp[yMax][3] > mp[xMax][1]):
+            lineType = 'h'
+            coord = mp[yMax][2]
+        elif (mp[yMax][3] < mp[xMax][1]):
+            lineType = 'v'
+            coord = mp[yMax][0]
+        else:
+            lineType = 'h'
+            coord = mp[yMax][2]
+
+        L = [lineType, coord]
+        S.append(L)
+        BoundedRects(L)
+
 
 # load the instance file
 fileNm = 'instance01.csv'
@@ -159,11 +154,10 @@ for i in range(0, len(points)):
     p = Point(i, points[i][0], points[i][1])
     R[0].points.append(p)
 
-xMean, xPts, yMean, yPts = Partition(R[0])
 
-# TODO: determine line type
-CreateLine('h', xMean)
+CreateLines()
 
+# plot the output
 for i in range(0, len(S)):
     if (S[i][0] == 'h'):
         plt.axhline(y=S[i][1], color='r', linestyle='-')
