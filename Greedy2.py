@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 
 S = []
 R = []
+numPoints = 0
 
 # A data structure for a rectangle
 class Rectangle:
@@ -24,9 +25,30 @@ class Point:
             self.x = x
             self.y = y
 
+def Plot():
+    global numPoints
+    # plot the output
+    for i in range(0, len(S)):
+        if (S[i][0] == 'h'):
+            plt.axhline(y=S[i][1], color='r', linestyle='-')
+        else:
+            plt.axvline(x=S[i][1], color='b', linestyle='-')
+    
+    points = np.zeros((numPoints,2), dtype=int)
+    idx = 0
+    for j in range(0,len(R)):
+        for i in range(0,len(R[j].points)):
+            points[idx][0] = R[j].points[i].x
+            points[idx][1] = R[j].points[i].y
+            idx += 1
+    
+    # plot the points
+    plt.scatter(points[:,0], points[:,1])
+    plt.xlabel('x')
+    plt.ylabel('y')
+    plt.show()
 
 def MovePoints(OriginalRect, NewRect, LineType):
-    
     ToBeMoved = []
 
     for i in range(0, len(OriginalRect.points)):
@@ -42,25 +64,31 @@ def MovePoints(OriginalRect, NewRect, LineType):
 
     return
 
-def BoundedRects(L):
-
-    for i in range(0, len(R)):
-        if (L[0] == 'h' and L[1] > R[i].x1 and L[1] < R[i].x2):
-            # create a new rectangle for the split
-            r = Rectangle(x1=R[i].x1, y1=L[1], x2= R[i].x2, y2= R[i].y2)
-            R.append(r)                
-            # update the existing rectangle y2 coordinate
-            R[i].y2 = L[1]
-        else:
-            # create a new rectangle for the split
-            r = Rectangle(x1=L[1], y1=R[i].y1, x2= R[i].x2, y2= R[i].y2)
-            R.append(r)                
-            # update the existing rectangle x2 coordinate
-            R[i].x2 = L[1]
-
-        MovePoints(R[i], r, L[0])
-
+def SplitRect(NewLine, OldRect):
+    if (NewLine[0] == 'h'):
+        # create a new rectangle for the split
+        newRect = Rectangle(x1=OldRect.x1, y1=NewLine[1], x2= OldRect.x2, y2= OldRect.y2)
+        R.append(newRect)                
+        # update the existing rectangle y2 coordinate
+        OldRect.y2 = NewLine[1]
+        MovePoints(OldRect, newRect, NewLine[0])
+    elif (NewLine[0] == 'v'):
+        # create a new rectangle for the split
+        newRect = Rectangle(x1=NewLine[1], y1=OldRect.y1, x2= OldRect.x2, y2= OldRect.y2)
+        R.append(newRect)                
+        # update the existing rectangle x2 coordinate
+        OldRect.x2 = NewLine[1]
+        MovePoints(OldRect, newRect, NewLine[0])
     return
+
+# determine the number of rectangles 
+def BoundedRects(L):
+    for i in range(0, len(R)):
+        if (L[0] == 'v' and L[1] > R[i].x1 and L[1] < R[i].x2):
+            SplitRect(L, R[i])
+        elif (L[0] == 'h' and L[1] > R[i].y1 and L[1] < R[i].y2):
+            SplitRect(L, R[i])
+
 
 def Partition(Rect):
     # use the mean of the points
@@ -110,7 +138,7 @@ def CreateLines():
         maxPts = []
 
         for i in range(0,len(R)):
-            #xMean, xPts, yMean, yPts = Partition(R[i])
+            #xMean, xPts, yMean, yPts 
             maxPts.append(Partition(R[i]))
 
         mp = np.array(maxPts)
@@ -124,42 +152,37 @@ def CreateLines():
             coord = mp[yMax][2]
         elif (mp[yMax][3] < mp[xMax][1]):
             lineType = 'v'
-            coord = mp[yMax][0]
+            coord = mp[xMax][0]
         else:
-            lineType = 'h'
-            coord = mp[yMax][2]
+            lineType = 'v'
+            coord = mp[xMax][2]
 
         L = [lineType, coord]
         S.append(L)
         BoundedRects(L)
+        Plot()
+
+def Initialize(fileNm):
+    global numPoints
+    # load the instance file
+    points = np.loadtxt(fileNm, skiprows=1, dtype=int)
+
+    xMax = max(points[:,0])
+    yMax = max(points[:,1])
+    BaseRect = Rectangle(0, 0, xMax, yMax)
+    R.append(BaseRect)
+
+    numPoints = len(points)
+
+    # add the points from the file into the Rectangle points list
+    for i in range(0, len(points)):
+        p = Point(i, points[i][0], points[i][1])
+        R[0].points.append(p)
 
 
-# load the instance file
-fileNm = 'instance01.csv'
-points = np.loadtxt(fileNm, skiprows=1, dtype=int)
 
-xMax = max(points[:,0])
-yMax = max(points[:,1])
-rect = Rectangle(0, 0, xMax, yMax)
-R.append(rect)
-
-# add the points from the file into the Rectangle points list
-for i in range(0, len(points)):
-    p = Point(i, points[i][0], points[i][1])
-    R[0].points.append(p)
-
-
+Initialize('instance01.csv')
 CreateLines()
 
-# plot the output
-for i in range(0, len(S)):
-    if (S[i][0] == 'h'):
-        plt.axhline(y=S[i][1], color='r', linestyle='-')
-    else:
-        plt.axvline(x=S[i][1], color='b', linestyle='-')
-# plot the points
-plt.scatter(points[:,0], points[:,1])
-plt.xlabel('x')
-plt.ylabel('y')
-plt.show()
+
 print("Done")
