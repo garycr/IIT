@@ -1,8 +1,13 @@
+import os
+import re
 import numpy as np
+import random
 import matplotlib.pyplot as plt
 
 S = []
 R = []
+
+# TODO: remove this and its references 
 numPoints = 0
 
 # A data structure for a rectangle
@@ -91,7 +96,12 @@ def BoundedRects(L):
 
 
 def Partition(Rect):
-    # use the mean of the points
+    pts = len(Rect.points)
+    
+    if (pts == 0):
+        return (0,0,0,0)
+
+   # use the mean of the points
     ux = 0
     uy = 0
     pts = len(Rect.points)
@@ -102,24 +112,23 @@ def Partition(Rect):
     meanX = 0
     meanY = 0
     if (pts > 0):
-        meanX = ux/pts
-        meanY = uy/pts
+        meanX = int(ux/pts)
+        meanY = int(uy/pts) 
 
-    if ((meanX % 1) == 0):
-        meanX += 0.5
-    
-    if ((meanY % 1) == 0):
-        meanY += 0.5
-
-    xPoints = 0
-    yPoints = 0
+    xAbove = 0
+    xBelow = 0
+    yAbove = 0
+    yBelow = 0
     for j in range(0, pts):
-        if (Rect.points[j].x > meanX):
-            xPoints += 1
-        if (Rect.points[j].y > meanY):
-            yPoints += 1
+        if (Rect.points[j].x > meanX):  xAbove += 1
+        if (Rect.points[j].x < meanX):  xBelow += 1
+        if (Rect.points[j].y > meanY):  yAbove += 1
+        if (Rect.points[j].y < meanY):  yBelow += 1
 
-    return (meanX, xPoints, meanY, yPoints)
+    xRandom = random.randint(0,1) - 0.5
+    yRandom = random.randint(0,1) - 0.5
+
+    return (meanX + xRandom, max(xAbove, xBelow), meanY + yRandom, max(yAbove, yBelow))
 
 def Done():
     
@@ -132,13 +141,11 @@ def Done():
     return done
 
 def CreateLines():
-    
     while (Done() != True):
     
         maxPts = []
 
         for i in range(0,len(R)):
-            #xMean, xPts, yMean, yPts 
             maxPts.append(Partition(R[i]))
 
         mp = np.array(maxPts)
@@ -154,16 +161,26 @@ def CreateLines():
             lineType = 'v'
             coord = mp[xMax][0]
         else:
-            lineType = 'v'
-            coord = mp[xMax][2]
+            ran = random.randint(0,1)
+            if (ran == 1):
+                lineType = 'v'
+                coord = mp[xMax][0]
+            else:
+                lineType = 'h'
+                coord = mp[yMax][2]
 
-        L = [lineType, coord]
+        L = (lineType, coord)
+
         S.append(L)
         BoundedRects(L)
-        Plot()
+    Plot()
 
 def Initialize(fileNm):
-    global numPoints
+    global numPoints, S, R
+
+    S = []
+    R = []
+
     # load the instance file
     points = np.loadtxt(fileNm, skiprows=1, dtype=int)
 
@@ -179,10 +196,24 @@ def Initialize(fileNm):
         p = Point(i, points[i][0], points[i][1])
         R[0].points.append(p)
 
+def WriteResults(filename):
+    number = re.findall('[0-9]+', filename)
+    fname = "greedy_solution" + number[0]
+    with open(fname, 'w') as f:
+        f.write('{x}\n'.format(x=len(S)))
+        output = np.array(S)
+        for l in range(0,len(output)):
+            f.write('{x} {y}\n'.format(x=output[l][0],y=output[l][1]))
+        f.close()
 
+def main():
+    path = "./"
+    for filename in os.listdir(path):
+        if re.match("instance\d+", filename):
+            with open(os.path.join(path, filename), 'r') as f:
+                Initialize(f)
+                CreateLines()
+                WriteResults(filename)
 
-Initialize('instance01.csv')
-CreateLines()
-
-
-print("Done")
+if __name__ == "__main__":
+    main()
