@@ -46,7 +46,7 @@ def MaximalClique(E):
 	C = 0
 	G = []
 
-	# Add each vertex to a graph and determine its degree
+
 	for n in range(0, len(E)):
 		bv = 0
 		for e in range(0,len(E[n])):
