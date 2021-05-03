@@ -11,7 +11,6 @@ class Edge:
             self.color = 'White'
 
 def min(M,V):
-    
     min = int(0xFFFFFF)
     idx = -1
 
