@@ -1,3 +1,6 @@
+# Mistakenly did the problem with Adjaceny list instead of matrix
+
+
 import numpy as np
 
 # A data structure for a graph
@@ -33,7 +36,8 @@ def min(V, E, idx):
     e = -1
 
     for i in range(0,len(E)):
-        if (V[E[i].u].color == 'Black' and E[i].color == 'White' and E[i].weight < min and V[E[i].v].color != 'Black'):
+        #if (V[E[i].u].color == 'Black' and E[i].color == 'White' and E[i].weight < min and V[E[i].v].color != 'Black'):
+        if (E[i].color == 'Grey' and E[i].color == 'White' and E[i].weight < min and V[E[i].v].color != 'Black'):
             e = E[i]
             min = e.weight
     if (e != -1):
@@ -83,21 +87,6 @@ E = [Edge(0,1,4),
      Edge(7,8,7),
      Edge(8,7,7)
     ]
-
-
-'''
-E = [
-    [Edge(1,4),Edge(7,8)],
-    [Edge(2,8)],
-    [Edge(3,7),Edge(5,4),Edge(8,2)],
-    [Edge(4,9),Edge(5,14)],
-    [Edge(5,10)],
-    [Edge(3,14),Edge(6,2)],
-    [Edge(7,1),Edge(8,6)],
-    [Edge(0,8),Edge(8,7)],
-    [Edge(2,2),Edge(7,7),Edge(6,6)],
-   ]
-'''
 
 G = Graph(V,E)
 MODIFIED_PRIM(G, V[0])
