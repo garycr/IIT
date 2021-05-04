@@ -55,8 +55,8 @@ def ExtractMin(Q):
     minVertex = minVertex + 1
     return min
 
-def DecreaseKey(Q, v, dv, MaxWeight):
-    COUNTING_SORT(G.V, MaxWeight)
+def DecreaseKey(Q, v, dv):
+    COUNTING_SORT(v, dv)
     return
 
 
@@ -82,7 +82,7 @@ def Dijkstra(G, Start, MaxWeight):
             if (alt <= v.distance):
                 v.distance = alt
                 v.parent = u
-                DecreaseKey(Q, v.index, v, MaxWeight)
+                DecreaseKey(Q, G.V, MaxWeight)
 
         u = ExtractMin(Q)                 # Remove and return best vertex
 
