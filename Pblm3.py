@@ -16,7 +16,7 @@ class Vertex:
             self.index = index 
             self.distance = -1
             self.parent = None
-            self.capacity = int(0xFFFFFF)
+            self.capacity = -1
 
 # A data structure for a vertex
 class Edge:
@@ -91,9 +91,8 @@ def Insert(S, x):
     IncreaseKey(S, maxHeapSize-1, x)
 
 def DijkstraCapacity(G, Start):
-    # Graph, vertices, edges, and weights initialized during construction
     Start.distance = 0
-    Start.capacity = 0
+    Start.capacity = int(0xFFFFFF)
 
     # create vertex priority queue Q
     Q = []
@@ -102,32 +101,34 @@ def DijkstraCapacity(G, Start):
     for i in range(0, len(G.V)):
         Insert(Q, G.V[i])
 
-    u = ExtractMax(Q)                 # Remove and return best vertex
+    u = ExtractMax(Q)                   # Remove and return best vertex
     while u is not -1:                  # The main loop
         
         for j in range(0,len(G.Adj[u.index])): # only v that are still in Q
             v = G.V[G.Adj[u.index][j].vertex]
-            alt = u.distance + G.Adj[u.index][j].weight
-            if (alt >= v.distance):
-                v.distance = alt
+                        
+            d = u.distance + G.Adj[u.index][j].weight
+            c = min(u.capacity, G.Adj[u.index][j].weight)
+            
+            if (c > v.capacity):
+                v.capacity = c
                 v.parent = u
-                IncreaseKey(Q, v.index, v)
-                if (v.capacity > G.Adj[u.index][j].weight):
-                    v.capacity = G.Adj[u.index][j].weight
+                IncreaseKey(Q, v.index, v)            
+
+            if (d < v.distance or v.distance == -1):
+                v.distance = d
 
         u = ExtractMax(Q)                 # Remove and return best vertex
 
     return 
 
 
-V = [Vertex(0),Vertex(1),Vertex(2),Vertex(3),Vertex(4),Vertex(5)]
+V = [Vertex(0),Vertex(1),Vertex(2),Vertex(3)]
 E = [
-    [Edge(1,1),Edge(2,7)],
-    [Edge(3,9),Edge(5,15)],
-    [Edge(4,4)],
-    [Edge(5,5),Edge(4,10)],
-    [Edge(5,3)],
-    [],
+    [Edge(1,7),Edge(2,5),Edge(3,6)],
+    [Edge(3,3),Edge(2,10)],
+    [Edge(1,5),Edge(3,9)],
+    []
    ]
 
 G = Graph(V,E)
