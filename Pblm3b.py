@@ -117,14 +117,12 @@ def Dijkstra(G,S):
     return 
 
 
-V = [Vertex(0),Vertex(1),Vertex(2),Vertex(3),Vertex(4),Vertex(5)]
+V = [Vertex(0),Vertex(1),Vertex(2),Vertex(3)]
 E = [
-    [Edge(1,1),Edge(2,7)],
-    [Edge(3,9),Edge(5,15)],
-    [Edge(4,4)],
-    [Edge(5,5),Edge(4,10)],
-    [Edge(5,3)],
-    [],
+    [Edge(1,7),Edge(2,5),Edge(3,6)],
+    [Edge(3,3),Edge(2,10)],
+    [Edge(1,5),Edge(3,9)],
+    []
    ]
 
 G = Graph(V,E)

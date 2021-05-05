@@ -14,8 +14,9 @@ class Vertex:
 	# Constructor to create a new vertex
 	def __init__(self, index):
             self.index = index 
-            self.distance = int(0xFFFFFF)
-            self.parent = []
+            self.distance = -1
+            self.parent = None
+            self.capacity = int(0xFFFFFF)
 
 # A data structure for a vertex
 class Edge:
@@ -26,7 +27,7 @@ class Edge:
             self.weight = weight
 
 
-minHeapSize = 0
+maxHeapSize = 0
 
 def Parent(i):
     return int(i/2)
@@ -43,56 +44,56 @@ def swap(ls, a, b):
     ls[b] = tmp
     return
 
-def MinHeapify(S, i):
-    global minHeapSize
+def MaxHeapify(S, i):
+    global maxHeapSize
     
-    smallest = i
+    largest = None
     l = Left(i)
     r = Right(i)
 
-    if l < minHeapSize:
-        if S[l].distance < S[i].distance:
-            smallest = l
+    if l < maxHeapSize:
+        if S[l].distance > S[i].distance:
+            largest = l
         else:
-            smallest = i
+            largest = i
 
-    if r < minHeapSize:
-        if S[r].distance < S[smallest].distance:
-            smallest = r
+    if r < maxHeapSize:
+        if S[r].distance > S[largest].distance:
+            largest = r
 
-    if smallest != None:
-        if smallest != i:
-            swap(S, i, smallest)
-            MinHeapify(S, smallest)
+    if largest != None:
+        if largest != i:
+            swap(S, i, largest)
+            MaxHeapify(S, largest)
 
-def ExtractMin(A):
-    global minHeapSize
-    if minHeapSize < 1:
+def ExtractMax(A):
+    global maxHeapSize
+    if maxHeapSize < 1:
         return -1
-    min = A[0]
-    A[0] = A[minHeapSize-1]
-    minHeapSize -= 1
-    MinHeapify(A,0)
-    return min
+    max = A[0]
+    maxHeapSize -= 1
+    A[0] = A[maxHeapSize]
+    MaxHeapify(A,0)
+    return max
 
-def DecreaseKey(A, i, x):
-    if x.distance > A[i].distance:
+def IncreaseKey(A, i, x):
+    if x.distance < A[i].distance:
         return -1
     A[i].distance = x.distance
-    while i > 0 and A[Parent(i-1)].distance > A[i].distance:
+    while i > 0 and A[Parent(i-1)].distance < A[i].distance:
         swap(A, i, Parent(i-1))
         i = Parent(i-1)
 
 def Insert(S, x):
-    global minHeapSize
-    minHeapSize += 1
+    global maxHeapSize
+    maxHeapSize += 1
     S.append(x)
-    DecreaseKey(S, minHeapSize-1, x)
+    IncreaseKey(S, maxHeapSize-1, x)
 
-# G=Graph, W=Weight, S=Source Vertex
-def Dijkstra(G,S):
+def DijkstraCapacity(G, Start):
     # Graph, vertices, edges, and weights initialized during construction
-    S.distance = 0
+    Start.distance = 0
+    Start.capacity = 0
 
     # create vertex priority queue Q
     Q = []
@@ -101,18 +102,20 @@ def Dijkstra(G,S):
     for i in range(0, len(G.V)):
         Insert(Q, G.V[i])
 
-    u = ExtractMin(Q)                 # Remove and return best vertex
+    u = ExtractMax(Q)                 # Remove and return best vertex
     while u is not -1:                  # The main loop
         
         for j in range(0,len(G.Adj[u.index])): # only v that are still in Q
             v = G.V[G.Adj[u.index][j].vertex]
             alt = u.distance + G.Adj[u.index][j].weight
-            if (alt <= v.distance):
+            if (alt >= v.distance):
                 v.distance = alt
-                v.parent.append(u)
-                DecreaseKey(Q, v.index, v)
+                v.parent = u
+                IncreaseKey(Q, v.index, v)
+                if (v.capacity > G.Adj[u.index][j].weight):
+                    v.capacity = G.Adj[u.index][j].weight
 
-        u = ExtractMin(Q)                 # Remove and return best vertex
+        u = ExtractMax(Q)                 # Remove and return best vertex
 
     return 
 
@@ -129,4 +132,4 @@ E = [
 
 G = Graph(V,E)
 
-Dijkstra(G, V[0])
+DijkstraCapacity(G, V[0])
