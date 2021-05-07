@@ -13,7 +13,7 @@ numPoints = 0
 # A data structure for a rectangle
 class Rectangle:
 	
-	# Constructor to create a new recetangle
+	# Constructor to create a new rectangle
 	def __init__(self, x1, y1, x2, y2):
             self.x1 = x1
             self.y1 = y1
@@ -56,13 +56,16 @@ def Plot():
 def MovePoints(OriginalRect, NewRect, LineType):
     ToBeMoved = []
 
+    # compare the points in the existing rectangle and see if they need to be moved
+    # to the new one
     for i in range(0, len(OriginalRect.points)):
         pt = OriginalRect.points[i]
         
         if ((LineType == 'h' and (pt.y < OriginalRect.y1 or pt.y > OriginalRect.y2)) or
            (LineType == 'v' and (pt.x < OriginalRect.x1 or pt.x > OriginalRect.x2))):
             ToBeMoved.append(pt)
-
+    
+    # move the points that need to go with the new rectangle
     for j in range(0,len(ToBeMoved)):
         OriginalRect.points.remove(ToBeMoved[j])
         NewRect.points.append(ToBeMoved[j])
@@ -127,8 +130,15 @@ def Partition(Rect):
         if (Rect.points[j].y < meanY):  yBelow += 1
 
     # random number generation 
-    xRandom = random.randint(0,1) - 0.5
-    yRandom = random.randint(0,1) - 0.5
+    if (meanX > 1): 
+        xRandom = random.randint(0,1) - 0.5
+    else:
+        xRandom = 0.5
+    
+    if (meanY > 1): 
+        yRandom = random.randint(0,1) - 0.5
+    else:
+        yRandom = 0.5
 
     return (meanX + xRandom, max(xAbove, xBelow), meanY + yRandom, max(yAbove, yBelow))
 
@@ -143,21 +153,24 @@ def Done():
 
     return done
 
-# main algorithm to divide the base rectangle into smaller ones by 'drawing' lines
+# main algorithm to divide the base rectangle into smaller ones by 
+# creating axis-parallel lines
 def CreateLines():
     while (Done() != True):
     
         maxPts = []
 
+        # tuples of (x-coord, # x pts, y-coord, # y pts)
         for i in range(0,len(R)):
             maxPts.append(Partition(R[i]))
 
         mp = np.array(maxPts)
 
+        # get the index of the x,y max points in mp
         xMax = np.argmax(mp[:,1])
         yMax = np.argmax(mp[:,3])
 
-        # determine line type
+        # determine line type and its axis coordinate
         if (mp[yMax][3] > mp[xMax][1]):
             lineType = 'h'
             coord = mp[yMax][2]
@@ -173,10 +186,21 @@ def CreateLines():
                 lineType = 'h'
                 coord = mp[yMax][2]
 
+        # add the new line to our list of lines
         L = (lineType, coord)
-
-        S.append(L)
-        BoundedRects(L)
+        duplicate = False
+        for i in range(0, len(S)):
+            if (S[i][0] == lineType and S[i][1] == coord):
+                duplicate = True
+                break
+            
+        if (duplicate == False):
+            S.append(L)
+            # split rectangles as necessary based on our new line
+            # and adjsut points to the correct rectangle
+            BoundedRects(L)
+    
+    # TODO: remove for submission
     Plot()
 
 def Initialize(fileNm):
@@ -189,12 +213,13 @@ def Initialize(fileNm):
     points = np.loadtxt(fileNm, skiprows=1, dtype=int)
 
     # use the maximum coordinates to create an initial base rectangle that will be 
-    # divide into more detailed rectangles in subsequent steps
+    # divided into smaller rectangles in CreateLines
     xMax = max(points[:,0])
     yMax = max(points[:,1])
     BaseRect = Rectangle(0, 0, xMax, yMax)
     R.append(BaseRect)
 
+    # TODO: remove for submission
     numPoints = len(points)
 
     # add the points from the file into the base Rectangle 
@@ -202,6 +227,7 @@ def Initialize(fileNm):
         p = Point(i, points[i][0], points[i][1])
         R[0].points.append(p)
 
+# Write the results to a file
 def WriteResults(filename):
     number = re.findall('[0-9]+', filename)
     fname = "greedy_solution" + number[0]
@@ -214,6 +240,8 @@ def WriteResults(filename):
 
 def main():
     path = "./"
+    
+    # Handle multiple inputs by looping through files in the directory
     for filename in os.listdir(path):
         if re.match("instance\d+", filename):
             with open(os.path.join(path, filename), 'r') as f:
