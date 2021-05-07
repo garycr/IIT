@@ -2,7 +2,6 @@ import os
 import re
 import numpy as np
 import random
-import matplotlib.pyplot as plt
 
 S = []
 R = []
@@ -29,29 +28,6 @@ class Point:
             self.idx = index 
             self.x = x
             self.y = y
-
-def Plot():
-    global numPoints
-    # plot the output
-    for i in range(0, len(S)):
-        if (S[i][0] == 'h'):
-            plt.axhline(y=S[i][1], color='r', linestyle='-')
-        else:
-            plt.axvline(x=S[i][1], color='b', linestyle='-')
-    
-    points = np.zeros((numPoints,2), dtype=int)
-    idx = 0
-    for j in range(0,len(R)):
-        for i in range(0,len(R[j].points)):
-            points[idx][0] = R[j].points[i].x
-            points[idx][1] = R[j].points[i].y
-            idx += 1
-    
-    # plot the points
-    plt.scatter(points[:,0], points[:,1])
-    plt.xlabel('x')
-    plt.ylabel('y')
-    plt.show()
 
 def MovePoints(OriginalRect, NewRect, LineType):
     ToBeMoved = []
@@ -94,15 +70,14 @@ def BoundedRects(L):
         elif (L[0] == 'h' and L[1] > R[i].y1 and L[1] < R[i].y2):
             SplitRect(L, R[i])
 
-# algorithm to decide where to draw lines to maximize point separation
+
 def Partition(Rect):
     pts = len(Rect.points)
     
     if (pts == 0):
         return (0,0,0,0)
 
-   # use the mean of the point's x and y coords in the rectangle as our separator 
-   # to split local clusters 
+   # use the mean of the points
     ux = 0
     uy = 0
     pts = len(Rect.points)
@@ -126,13 +101,11 @@ def Partition(Rect):
         if (Rect.points[j].y > meanY):  yAbove += 1
         if (Rect.points[j].y < meanY):  yBelow += 1
 
-    # random number generation 
     xRandom = random.randint(0,1) - 0.5
     yRandom = random.randint(0,1) - 0.5
 
     return (meanX + xRandom, max(xAbove, xBelow), meanY + yRandom, max(yAbove, yBelow))
 
-# test to see if there are more points to be separated
 def Done():
     
     done = True
@@ -143,7 +116,6 @@ def Done():
 
     return done
 
-# main algorithm to divide the base rectangle into smaller ones by 'drawing' lines
 def CreateLines():
     while (Done() != True):
     
@@ -177,19 +149,16 @@ def CreateLines():
 
         S.append(L)
         BoundedRects(L)
-    Plot()
 
 def Initialize(fileNm):
     global numPoints, S, R
 
-    S = []  # set of vertical or horizontal lines
-    R = []  # collection of rectangles
+    S = []
+    R = []
 
     # load the instance file
     points = np.loadtxt(fileNm, skiprows=1, dtype=int)
 
-    # use the maximum coordinates to create an initial base rectangle that will be 
-    # divide into more detailed rectangles in subsequent steps
     xMax = max(points[:,0])
     yMax = max(points[:,1])
     BaseRect = Rectangle(0, 0, xMax, yMax)
@@ -197,7 +166,7 @@ def Initialize(fileNm):
 
     numPoints = len(points)
 
-    # add the points from the file into the base Rectangle 
+    # add the points from the file into the Rectangle points list
     for i in range(0, len(points)):
         p = Point(i, points[i][0], points[i][1])
         R[0].points.append(p)
