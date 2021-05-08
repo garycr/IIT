@@ -189,9 +189,6 @@ def Initialize(fileNm):
     BaseRect = Rectangle(0, 0, xMax, yMax)
     R.append(BaseRect)
 
-    # TODO: remove for submission
-    numPoints = len(points)
-
     # add the points from the file into the base Rectangle 
     for i in range(0, len(points)):
         p = Point(i, points[i][0], points[i][1])
