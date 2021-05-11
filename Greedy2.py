@@ -3,6 +3,7 @@ import re
 import numpy as np
 import random
 import matplotlib.pyplot as plt
+import statistics
 
 S = []
 R = []
@@ -104,44 +105,42 @@ def Partition(Rect):
     if (pts == 0):
         return (0,0,0,0)
 
-   # use the mean of the point's x and y coords in the rectangle as our separator 
+   # use the median of the point's x and y coords in the rectangle as our separator 
    # to split local clusters 
-    ux = 0
-    uy = 0
-    pts = len(Rect.points)
+    x = []
+    y = []
     for i in range(0, pts):
-        ux += Rect.points[i].x
-        uy += Rect.points[i].y
-    
-    meanX = 0
-    meanY = 0
-    if (pts > 0):
-        meanX = int(ux/pts)
-        meanY = int(uy/pts) 
+        x.append(Rect.points[i].x)
+        y.append(Rect.points[i].y)
 
-    xAbove = 0
-    xBelow = 0
+    medX = statistics.median(x)
+    meanX = statistics.mean(x)
+    if (not medX % 1):     
+        if (meanX <  medX and medX > 1): 
+            medX -= 0.5
+        else:
+            medX += 0.5
+
+    medY = statistics.median(y)
+    meanY = statistics.mean(y)
+    if (not medY % 1):
+        if (meanY <  medY and medY > 1): 
+            medY -= 0.5
+        else:
+            medY += 0.5
+
+    xRight = 0
+    xLeft = 0
     yAbove = 0
     yBelow = 0
     for j in range(0, pts):
-        if (Rect.points[j].x > meanX):  xAbove += 1
-        if (Rect.points[j].x < meanX):  xBelow += 1
-        if (Rect.points[j].y > meanY):  yAbove += 1
-        if (Rect.points[j].y < meanY):  yBelow += 1
+        if (Rect.points[j].x > medX): xRight += 1
+        if (Rect.points[j].x < medX):  xLeft += 1
+        if (Rect.points[j].y > medY):  yAbove += 1
+        if (Rect.points[j].y < medY):  yBelow += 1
 
-    # random number generation 
-    if (meanX > 1): 
-        xRandom = random.randint(0,1) - 0.5
-    else:
-        xRandom = 0.5
+    return (medX, max(xRight, xLeft), medY, max(yAbove, yBelow))
     
-    if (meanY > 1): 
-        yRandom = random.randint(0,1) - 0.5
-    else:
-        yRandom = 0.5
-
-    return (meanX + xRandom, max(xAbove, xBelow), meanY + yRandom, max(yAbove, yBelow))
-
 # test to see if there are more points to be separated
 def Done():
     
@@ -162,7 +161,13 @@ def CreateLines():
 
         # tuples of (x-coord, # x pts, y-coord, # y pts)
         for i in range(0,len(R)):
-            maxPts.append(Partition(R[i]))
+            part = list(Partition(R[i]))
+            for j in range(0, len(S)):
+                if (S[j][0] == 'v' and S[j][1] == part[0]):
+                    part[1] = 0
+                if (S[j][0] == 'h' and S[j][1] == part[2]):
+                    part[3] = 0
+            maxPts.append(part)
 
         mp = np.array(maxPts)
 
@@ -171,37 +176,37 @@ def CreateLines():
         yMax = np.argmax(mp[:,3])
 
         # determine line type and its axis coordinate
-        if (mp[yMax][3] > mp[xMax][1]):
-            lineType = 'h'
-            coord = mp[yMax][2]
-        elif (mp[yMax][3] < mp[xMax][1]):
+        if (mp[yMax][3] < mp[xMax][1]):
             lineType = 'v'
             coord = mp[xMax][0]
+        elif (mp[yMax][3] > mp[xMax][1]):
+            lineType = 'h'
+            coord = mp[yMax][2]
         else:
-            ran = random.randint(0,1)
-            if (ran == 1):
+            if (len(S) == 0):
                 lineType = 'v'
                 coord = mp[xMax][0]
-            else:
+            elif (len(S) == 1):
                 lineType = 'h'
                 coord = mp[yMax][2]
+            else:
+                ran = random.randint(0,1)
+                if (ran == 1):
+                    lineType = 'v'
+                    coord = mp[xMax][0]
+                else:
+                    lineType = 'h'
+                    coord = mp[yMax][2]
 
         # add the new line to our list of lines
         L = (lineType, coord)
-        duplicate = False
-        for i in range(0, len(S)):
-            if (S[i][0] == lineType and S[i][1] == coord):
-                duplicate = True
-                break
-            
-        if (duplicate == False):
-            S.append(L)
-            # split rectangles as necessary based on our new line
-            # and adjsut points to the correct rectangle
-            BoundedRects(L)
+        S.append(L)
+        # split rectangles as necessary based on our new line
+        # and adjsut points to the correct rectangle
+        BoundedRects(L)
     
-    # TODO: remove for submission
-    Plot()
+        # TODO: remove for submission
+        Plot()
 
 def Initialize(fileNm):
     global numPoints, S, R
