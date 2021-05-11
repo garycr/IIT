@@ -103,7 +103,7 @@ def Partition(Rect):
     pts = len(Rect.points)
     
     if (pts == 0):
-        return (0,0,0,0)
+        return (0,0,0,0,0)
 
    # use the median of the point's x and y coords in the rectangle as our separator 
    # to split local clusters 
@@ -139,7 +139,8 @@ def Partition(Rect):
         if (Rect.points[j].y > medY):  yAbove += 1
         if (Rect.points[j].y < medY):  yBelow += 1
 
-    return (medX, max(xRight, xLeft), medY, max(yAbove, yBelow))
+    #return (medX, max(xRight, xLeft), medY, max(yAbove, yBelow))
+    return (medX, max(xRight, xLeft), medY, max(yAbove, yBelow), len(Rect.points))
     
 # test to see if there are more points to be separated
 def Done():
@@ -159,9 +160,10 @@ def CreateLines():
     
         maxPts = []
 
-        # tuples of (x-coord, # x pts, y-coord, # y pts)
+        # partition returned as tuples of (x-coord, # x pts, y-coord, # y pts, total points)
         for i in range(0,len(R)):
             part = list(Partition(R[i]))
+            # check for duplication against our list of lines
             for j in range(0, len(S)):
                 if (S[j][0] == 'v' and S[j][1] == part[0]):
                     part[1] = 0
@@ -172,31 +174,32 @@ def CreateLines():
         mp = np.array(maxPts)
 
         # get the index of the x,y max points in mp
-        xMax = np.argmax(mp[:,1])
-        yMax = np.argmax(mp[:,3])
+        Max  = np.argmax(mp[:,4])
+        #xMax = np.argmax(mp[:,1])
+        #yMax = np.argmax(mp[:,3])
 
         # determine line type and its axis coordinate
-        if (mp[yMax][3] < mp[xMax][1]):
+        if (mp[Max][3] < mp[Max][1]):
             lineType = 'v'
-            coord = mp[xMax][0]
-        elif (mp[yMax][3] > mp[xMax][1]):
+            coord = mp[Max][0]
+        elif (mp[Max][3] > mp[Max][1]):
             lineType = 'h'
-            coord = mp[yMax][2]
+            coord = mp[Max][2]
         else:
             if (len(S) == 0):
                 lineType = 'v'
-                coord = mp[xMax][0]
+                coord = mp[Max][0]
             elif (len(S) == 1):
                 lineType = 'h'
-                coord = mp[yMax][2]
+                coord = mp[Max][2]
             else:
                 ran = random.randint(0,1)
                 if (ran == 1):
                     lineType = 'v'
-                    coord = mp[xMax][0]
+                    coord = mp[Max][0]
                 else:
                     lineType = 'h'
-                    coord = mp[yMax][2]
+                    coord = mp[Max][2]
 
         # add the new line to our list of lines
         L = (lineType, coord)
@@ -206,7 +209,7 @@ def CreateLines():
         BoundedRects(L)
     
         # TODO: remove for submission
-        Plot()
+        #Plot()
 
 def Initialize(fileNm):
     global numPoints, S, R
